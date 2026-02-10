@@ -21,8 +21,8 @@ static struct kfifo buff;
 
 static long ioctl_ops(struct file *filp, unsigned int cmd, unsigned long arg)
 {
+    pr_debug("i got called\n");
     int ret = 0;
-#define MAX_CHAR_SIZE 128
     struct data buffer;
 
     pr_debug("In ioctl method, cmd=%d\n", _IOC_NR(cmd));
@@ -46,14 +46,14 @@ static long ioctl_ops(struct file *filp, unsigned int cmd, unsigned long arg)
             pr_err("kfifo_alloc failed\n");
             return ret;
         }
-        pr_info("circular buffer initlized successfully with size:%ld", arg);
+        pr_info("circular buffer initlized successfully with size:%ld\n", arg);
         break;
     case IOCTL_LLKD_IOPUSH:
         ret = copy_from_user((void *)&buffer, (const void __user *)arg, sizeof(struct data));
         
 
-        buffer = *(struct data *)arg;
-        kfifo_in(&buff, buffer, sizeof(struct data));
+        // buffer = *(struct data *)arg;
+        // kfifo_in(&buff, buffer, sizeof(struct data));
         pr_debug("data: %s - len: %d inserted in kfifo successfully.\n", buffer.data, buffer.length);
         break;
     // case IOCTL_LLKD_IOPOP:
