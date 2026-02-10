@@ -1,7 +1,6 @@
 TARGET_MODULE:=ioctl_kfifo
 
 ifneq ($(KERNELRELEASE),)
-	$(TARKET_MODULE)-objs := char-device.o
 	obj-m := $(TARGET_MODULE).o
 else
 	BUILDSYSTEM_DIR:=/lib/modules/$(shell uname -r)/build
