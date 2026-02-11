@@ -7,6 +7,7 @@ What i did
 - created a character device `/dev/ankit`
 - change data structure of `struct data->data` to static char array, to make it less error prone. 
 
+[demo](demo.mp4)
 
 ## Build the kernel Module and Install
 ```
