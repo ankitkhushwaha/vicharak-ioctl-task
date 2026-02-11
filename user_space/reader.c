@@ -16,7 +16,7 @@ int main(void)
     // d->length = 3;
     // d->data = malloc(3);
     int ret = ioctl(fd, IOCTL_LLKD_IOPOP, d);
-    printf("ret: %d", ret);
+    printf("ret: %d\n", ret);
     if (ret >= 0)
         printf("data: %s with len: %d\n", d->data, d->length);
 

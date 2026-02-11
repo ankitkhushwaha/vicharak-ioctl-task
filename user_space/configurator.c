@@ -8,7 +8,8 @@
 #define DRIVER_NAME "/dev/ankit"
 // #define SET_SIZE_OF_QUEUE _IOW('a', 'a', int * )
 
-int main(void) {
+int main(void)
+{
     int fd = open(DRIVER_NAME, O_RDWR);
     printf("fd: %d", fd);
     int size = 100;
