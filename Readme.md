@@ -9,7 +9,7 @@ What i did
 
 [demo](demo.mp4)
 
-<video src="https://github.com/ankitkhushwaha/vicharak-ioctl-task/raw/main/demo.mp4" width="720" controls />
+<video src="https://github.com/ankitkhushwaha/vicharak-ioctl-task/raw/main/demo.mp4" width="720" height="480" controls preload="metadata"></video>
 
 ## Build the kernel Module and Install
 ```
