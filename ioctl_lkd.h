@@ -1,8 +1,10 @@
 #include <linux/types.h>
 
+#define MAX_DATA    128
+
 struct data {
     int length;
-    char * data;
+    char data[MAX_DATA];
 };
 
 #define IOCTL_LLKD_MAGIC        'a'

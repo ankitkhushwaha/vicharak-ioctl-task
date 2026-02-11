@@ -40,21 +40,39 @@ static long ioctl_ops(struct file *filp, unsigned int cmd, unsigned long arg)
     switch (cmd)
     {
     case IOCTL_LLKD_IOSIZE:
-        ret = kfifo_alloc(&buff, (int)arg, GFP_KERNEL);
-        if (ret < 0)
+        if (!kfifo_initialized(&buff))
         {
-            pr_err("kfifo_alloc failed\n");
-            return ret;
+            ret = kfifo_alloc(&buff, (int)arg, GFP_KERNEL);
+            if (ret < 0)
+            {
+                pr_err("kfifo_alloc failed\n");
+                return ret;
+            }
+            pr_info("circular buffer initlized successfully with size:%ld\n", arg);
         }
-        pr_info("circular buffer initlized successfully with size:%ld\n", arg);
+        else
+            pr_info("circular buffer already initlized with size:%d. \n", kfifo_size(&buff));
         break;
     case IOCTL_LLKD_IOPUSH:
-        ret = copy_from_user((void *)&buffer, (const void __user *)arg, sizeof(struct data));
-        
+        pr_info("Push cmd executed\n");
 
-        // buffer = *(struct data *)arg;
-        // kfifo_in(&buff, buffer, sizeof(struct data));
-        pr_debug("data: %s - len: %d inserted in kfifo successfully.\n", buffer.data, buffer.length);
+        struct data __user *user_buffer = (struct data __user *)arg;
+        if (copy_from_user(&buffer, user_buffer, sizeof(struct data)))
+        {
+            pr_err("copy_from_user failed for struct data\n");
+            return -EFAULT;
+        }
+
+        int tmp_len = buffer.length;
+        if (tmp_len <= 0 || tmp_len > MAX_DATA)
+        {
+            pr_warn("Invalid data size given\n");
+            return -EFAULT;
+        }
+
+        kfifo_in(&buff, (void *)&buffer, sizeof(struct data));
+        pr_info("data: %s - len: %d inserted in kfifo with ret: %d.\n",
+                buffer.data, buffer.length, ret);
         break;
     // case IOCTL_LLKD_IOPOP:
     //     kfifo_out(&buff, &buffer, sizeof(struct data));
@@ -111,6 +129,7 @@ out:
 
 static void __exit kfifo_exit(void)
 {
+    // kfifo_free(buff); // kiffio buff is not ptr
     device_destroy(cls, MKDEV(major, 0));
     class_destroy(cls);
 
