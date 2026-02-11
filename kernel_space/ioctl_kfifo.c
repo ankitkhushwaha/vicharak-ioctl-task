@@ -55,9 +55,12 @@ static long ioctl_ops(struct file *filp, unsigned int cmd, unsigned long arg)
         break;
     case IOCTL_LLKD_IOPUSH:
         pr_info("Push cmd executed\n");
-
-        struct data __user *user_buffer = (struct data __user *)arg;
-        if (copy_from_user(&buffer, user_buffer, sizeof(struct data)))
+        if (kfifo_is_full(&buff)) {
+            pr_warn("circular buffer is full, no data pushed\n");
+            return -ENOSPC;
+        }
+        struct data __user *user_push = (struct data __user *)arg;
+        if (copy_from_user(&buffer, user_push, sizeof(struct data)))
         {
             pr_err("copy_from_user failed for struct data\n");
             return -EFAULT;
@@ -74,10 +77,20 @@ static long ioctl_ops(struct file *filp, unsigned int cmd, unsigned long arg)
         pr_info("data: %s - len: %d inserted in kfifo with ret: %d.\n",
                 buffer.data, buffer.length, ret);
         break;
-    // case IOCTL_LLKD_IOPOP:
-    //     kfifo_out(&buff, &buffer, sizeof(struct data));
-    //     pr_debug("data: %s - len: %d poped in kfifo successfully.\n", buffer.data, buffer.length);
-    //     break;
+    case IOCTL_LLKD_IOPOP:
+        if (kfifo_is_empty(&buff)) {
+            pr_warn("circular buffer is empty. No data poped\n");
+            return -ENODATA;
+        }
+        struct data __user *user_pop = (struct data __user *)arg;
+        ret = kfifo_out(&buff, &buffer, sizeof(struct data));
+        pr_info("data: %s - len: %d poped from kfifo successfully with ret: %d.\n",
+                buffer.data, buffer.length, ret);
+        if (copy_to_user(user_pop, (void *)&buffer, sizeof(struct data))) {
+            pr_err("copy_to_user[pop ops] failed\n");
+            return -EFAULT;
+        }
+        break;
     default:
         return -ENOTTY;
     }
