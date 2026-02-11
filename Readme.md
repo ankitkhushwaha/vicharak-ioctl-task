@@ -9,6 +9,8 @@ What i did
 
 [demo](demo.mp4)
 
+<video src="https://github.com/ankitkhushwaha/vicharak-ioctl-task/raw/main/demo.mp4" width="720" controls />
+
 ## Build the kernel Module and Install
 ```
 cd kernel_space/
