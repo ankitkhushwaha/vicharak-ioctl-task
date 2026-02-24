@@ -1,11 +1,12 @@
 
 
 # PreRequiste task for vicharak kernel dev role
-What i did
 
+CHANGELOG:
 - Utilized kfifo for the circular buffer.
 - created a character device `/dev/ankit`
-- change data structure of `struct data->data` to static char array, to make it less error prone and production use. 
+- change data structure of `struct data->data` to static char array with size of 128 bytes, to make it less error prone and production use. 
+- add mutex locks for handling concurrency.
 
 ![demo](demo.gif)
 
