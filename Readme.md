@@ -5,7 +5,7 @@ What i did
 
 - Utilized kfifo for the circular buffer.
 - created a character device `/dev/ankit`
-- change data structure of `struct data->data` to static char array, to make it less error prone. 
+- change data structure of `struct data->data` to static char array, to make it less error prone and production use. 
 
 ![demo](demo.gif)
 
