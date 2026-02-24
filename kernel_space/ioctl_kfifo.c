@@ -105,8 +105,10 @@ static long ioctl_ops(struct file *filp, unsigned int cmd, unsigned long arg)
         ret = kfifo_out(&buff, &rm_data, sizeof(struct data));
         mutex_unlock(&kfifo_lock);
 
-        if (rm_data.length < 0 || rm_data.length > MAX_DATA)
+        if (rm_data.length < 0 || rm_data.length > MAX_DATA) {
+            pr_err("poped data is invalid");            
             return -EIO;
+        }
         pr_info("data: %.*s - len: %d poped from kfifo successfully with ret: %d.\n",
                 rm_data.length, rm_data.data, rm_data.length, ret);
 
