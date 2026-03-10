@@ -9,7 +9,7 @@ struct data {
 
 #define IOCTL_LLKD_MAGIC        'a'
 
-#define IOCTL_LLKD_MAXIOCTL     3
+#define IOCTL_LLKD_MAXIOCTL     2
 
 #define IOCTL_LLKD_IOSIZE     _IOR(IOCTL_LLKD_MAGIC, 0, int)
 
